@@ -1,0 +1,2440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0c4a6e">
+    <title>Mancingmatika</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Fredoka', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            background-color: #020617;
+        }
+
+        .font-fredoka {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(1deg); }
+        }
+
+        .animate-float-slow {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 25px rgba(245, 158, 11, 0.85); }
+        }
+
+        .pulse-bait {
+            animation: pulseGlow 2s infinite;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-pop-in {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .lobby-ocean-bg {
+            background:
+                linear-gradient(180deg, rgba(2,18,40,0.55) 0%, rgba(2,18,40,0.72) 100%),
+                url('https://i.ibb.co.com/C3kbW5Bw/Mancingmatika-Ocean-Math-Adventure-1.png') center / cover no-repeat,
+                linear-gradient(180deg, #0369a1 0%, #0c4a6e 40%, #03254c 75%, #020617 100%);
+        }
+
+        .bubble-particle {
+            position: absolute;
+            bottom: -50px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatBubble 8s infinite linear;
+        }
+
+        @keyframes floatBubble {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* ===== Tombol 3D ala game ===== */
+        .btn3d {
+            --c: #475569; --d: #1e293b;
+            position: relative;
+            border: none;
+            border-radius: 18px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 50%), var(--c);
+            box-shadow: 0 7px 0 var(--d), 0 12px 16px rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.45);
+            text-shadow: 0 2px 0 rgba(0,0,0,0.3);
+            transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn3d:hover { filter: brightness(1.12); }
+        .btn3d:active, .btn3d.sel {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 var(--d), 0 4px 8px rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.35);
+        }
+        .btn3d.sel {
+            --c: var(--sc); --d: var(--sd);
+            outline: 3px solid rgba(255,255,255,0.85);
+            outline-offset: 1px;
+        }
+        .btn3d-start {
+            --c: #22c55e; --d: #15803d;
+            font-size: 1.6rem;
+            padding: 16px 24px;
+            letter-spacing: 0.08em;
+            border-radius: 22px;
+            box-shadow: 0 9px 0 var(--d), 0 16px 22px rgba(0,0,0,0.4), inset 0 3px 0 rgba(255,255,255,0.5);
+            animation: startPulse 1.8s ease-in-out infinite;
+        }
+        .btn3d-start:active { animation: none; transform: translateY(7px); box-shadow: 0 2px 0 var(--d), 0 4px 8px rgba(0,0,0,0.4), inset 0 3px 0 rgba(255,255,255,0.4); }
+        @keyframes startPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.15); }
+        }
+        .lobby-row {
+            background: rgba(2, 18, 40, 0.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 26px;
+            padding: 14px 12px 20px 12px;
+            width: 100%;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        .lobby-icon {
+            width: 34px; height: 34px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; font-size: 16px;
+            background: rgba(255,255,255,0.1);
+        }
+        .lobby-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #fde047;
+            text-shadow: 0 2px 0 #b45309, 0 4px 0 #78350f, 0 8px 14px rgba(0,0,0,0.45);
+            letter-spacing: 0.04em;
+        }
+
+        .btn3d-sm {
+            border-radius: 14px;
+            box-shadow: 0 4px 0 var(--d), 0 7px 10px rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.4);
+        }
+        .btn3d-sm:active, .btn3d-sm.sel {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 var(--d), 0 3px 5px rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.3);
+        }
+        .game-panel {
+            background: linear-gradient(180deg, rgba(18, 46, 88, 0.97) 0%, rgba(4, 16, 40, 0.98) 100%);
+            border: 2px solid rgba(253, 224, 71, 0.5);
+            border-radius: 28px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+        .hud-card {
+            background: linear-gradient(180deg, rgba(20, 50, 92, 0.92) 0%, rgba(4, 18, 44, 0.92) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 18px;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.35), 0 10px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .modal-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #fde047;
+            letter-spacing: 0.06em;
+            text-shadow: 0 2px 0 #92400e, 0 5px 10px rgba(0,0,0,0.4);
+        }
+        .tip-row {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .tip-icon {
+            width: 40px; height: 40px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 14px; font-size: 18px; color: #fff;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+        }
+        .game-input {
+            width: 100%;
+            background: rgba(2, 10, 28, 0.8);
+            border: 2px solid var(--ic, #475569);
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #fff; font-weight: 700; font-size: 15px;
+            outline: none; transition: box-shadow 0.15s;
+        }
+        .game-input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.18); }
+        .game-input::placeholder { color: #64748b; }
+
+        /* ===== Halaman Cover ===== */
+        #coverPage {
+            position: fixed; inset: 0; z-index: 60;
+            background: linear-gradient(180deg, #0369a1 0%, #0c4a6e 40%, #03254c 75%, #020617 100%);
+            overflow: hidden;
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+        #coverPage.cover-hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+        .cover-bg-blur {
+            position: absolute; inset: -20px;
+            background-size: cover; background-position: center;
+            filter: blur(22px) brightness(0.7);
+        }
+        .cover-img {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+        }
+        .cover-shade {
+            position: absolute; left: 0; right: 0; bottom: 0; height: 38%;
+            background: linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,0.75) 100%);
+            pointer-events: none;
+        }
+        .cover-actions {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            padding: 0 24px calc(28px + env(safe-area-inset-bottom, 0px));
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .btn3d-cover { width: min(320px, 82vw); font-size: 1.9rem; padding: 16px 24px; }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col justify-between text-slate-100">
+
+    <!-- Top Header / Game Bar -->
+    <header class="glass-panel border-b border-cyan-500/30 px-4 py-2.5 z-30 shadow-2xl relative">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            
+            <!-- Game Title & Grade -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-slate-950 rounded-2xl shadow-lg shadow-amber-500/20 border border-amber-200/50 flex items-center justify-center animate-float-slow">
+                    <i class="fa-solid fa-fish-fins text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-base md:text-lg font-black tracking-wide text-amber-300 drop-shadow flex items-center gap-2">
+                        Mancingmatika <span id="modeBadge" class="text-[10px] bg-rose-500/90 text-white px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-rose-300/30">DUEL 1 VS 1</span>
+                    </h1>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span id="currentGradeBadge" class="bg-cyan-950/80 text-cyan-300 text-[11px] px-2.5 py-0.5 rounded-full border border-cyan-500/40 font-bold tracking-wide">
+                            Kelas 1 SD
+                        </span>
+                        <span id="currentTimeBadge" class="bg-indigo-950/80 text-indigo-300 text-[11px] px-2.5 py-0.5 rounded-full border border-indigo-500/40 font-bold">
+                            Durasi: 60s
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Timer Box -->
+            <div id="vsTimerBox" class="bg-slate-950/90 px-5 py-1.5 rounded-2xl border border-amber-500/40 flex items-center space-x-3 shadow-lg shadow-amber-500/5">
+                <i class="fa-solid fa-stopwatch text-amber-400 text-2xl animate-pulse"></i>
+                <div>
+                    <div class="text-[9px] text-amber-400/80 uppercase font-black tracking-wider leading-none">Sisa Waktu</div>
+                    <div id="globalTimerText" class="text-xl md:text-2xl font-black text-amber-300 leading-none font-fredoka mt-0.5">60s</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center space-x-2">
+                <button id="soundBtn" onclick="toggleSound()" class="btn3d btn3d-sm w-10 h-10" style="--c:#475569;--d:#1e293b">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-amber-400 text-lg"></i>
+                </button>
+                <button onclick="openMenuModal()" class="btn3d btn3d-sm px-4 h-10 text-sm tracking-wider" style="--c:#f59e0b;--d:#b45309">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>LOBI</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Game Area: Single Ocean Screen for both Solo & Duel -->
+    <main id="mainGameContainer" class="relative flex-1 w-full h-full overflow-hidden bg-slate-950 flex flex-col">
+        
+        <!-- Top HUD Player Scoreboard Bar -->
+        <div class="absolute top-3 left-4 right-4 z-20 flex justify-between items-center pointer-events-none">
+            <!-- P1 Score Badge -->
+            <div id="p1ScoreCard" class="hud-card px-4 py-2 border-2 border-cyan-400 flex items-center space-x-3 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
+                <div>
+                    <div id="p1NameLabel" class="text-[10px] uppercase font-black text-cyan-300 tracking-wider">PEMAIN 1</div>
+                    <div id="p1ScoreText" class="text-sm md:text-base font-extrabold text-amber-300 font-fredoka">0 Poin</div>
+                </div>
+            </div>
+
+            <div id="turnBadge" class="hud-card px-4 py-1.5 border-2 border-amber-400/70 flex items-center space-x-2 pointer-events-auto cursor-pointer transition" style="border-radius:999px" onclick="switchTurn()">
+                <i class="fa-solid fa-arrows-rotate text-amber-400 text-xs animate-spin-slow"></i>
+                <span id="turnText" class="text-xs font-black text-amber-300 font-fredoka uppercase tracking-wide">GILIRAN: PEMAIN 1</span>
+                <span id="turnTimerBadge" class="bg-rose-500/90 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-rose-300/40 font-fredoka ml-1">60s</span>
+            </div>
+
+            <!-- P2 Score Badge (Duel Mode) -->
+            <div id="p2ScoreCard" class="hud-card px-4 py-2 border-2 border-rose-500/50 flex items-center space-x-3 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-rose-400"></div>
+                <div>
+                    <div id="p2NameLabel" class="text-[10px] uppercase font-black text-rose-300 tracking-wider">PEMAIN 2</div>
+                    <div id="p2ScoreText" class="text-sm md:text-base font-extrabold text-amber-300 font-fredoka">0 Poin</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single Ocean Canvas -->
+        <canvas id="canvasOcean" class="absolute inset-0 w-full h-full z-10"></canvas>
+
+        <!-- Bait Panel Bottom Floating Bar -->
+        <div id="baitPanel" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md transition-all duration-300 transform translate-y-28 opacity-0 pointer-events-none">
+            <div class="game-panel p-3.5 pointer-events-auto text-center" style="border-radius:24px">
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <span id="baitHeader" class="text-amber-300 text-xs font-black uppercase tracking-wider font-fredoka">UMPAN JAWABAN</span>
+                    <button onclick="closeBaitPanel()" class="btn3d btn3d-sm w-8 h-8 text-xs" style="--c:#64748b;--d:#334155"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="baitContainer" class="grid grid-cols-2 gap-3 pb-1"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Nama Pemain -->
+    <div id="nameInputModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="game-panel max-w-sm w-full p-6 text-white animate-pop-in">
+            <div class="text-center mb-5">
+                <div class="inline-flex w-14 h-14 rounded-2xl items-center justify-center text-2xl mb-2" style="background:linear-gradient(180deg,#fde047,#f59e0b);color:#78350f;box-shadow:0 5px 0 #b45309, inset 0 2px 0 rgba(255,255,255,.5)">
+                    <i class="fa-solid fa-user-pen"></i>
+                </div>
+                <h3 class="modal-title text-2xl">NAMA PEMAIN</h3>
+            </div>
+
+            <form id="playerForm" onsubmit="handlePlayerNameSubmit(event)" class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="tip-icon" style="background:linear-gradient(180deg,#22d3ee,#0891b2)"><i class="fa-solid fa-user"></i></div>
+                    <input type="text" id="inputP1Name" maxlength="15" placeholder="Pemain 1" required class="game-input" style="--ic:#06b6d4">
+                </div>
+                <div id="p2InputGroup" class="flex items-center gap-3">
+                    <div class="tip-icon" style="background:linear-gradient(180deg,#fb7185,#e11d48)"><i class="fa-solid fa-user-ninja"></i></div>
+                    <input type="text" id="inputP2Name" maxlength="15" placeholder="Pemain 2" class="game-input" style="--ic:#f43f5e">
+                </div>
+
+                <button type="submit" class="btn3d btn3d-start w-full mt-3" style="font-size:1.3rem;padding:13px 20px;animation:none">
+                    <i class="fa-solid fa-play"></i><span>MULAI</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Mutiara HOTS -->
+    <div id="hotsModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="game-panel max-w-sm w-full p-6 text-white text-center animate-pop-in" style="border-color:rgba(244,114,182,0.6)">
+            <div class="inline-flex w-16 h-16 rounded-full items-center justify-center text-3xl mb-2 animate-bounce" style="background:linear-gradient(180deg,#f472b6,#a855f7);color:#fde047;box-shadow:0 5px 0 #6b21a8, inset 0 2px 0 rgba(255,255,255,.5)">
+                <i class="fa-solid fa-gem"></i>
+            </div>
+
+            <div id="hotsPlayerTag" class="inline-block bg-pink-500/25 text-pink-200 border border-pink-400/50 font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+                GILIRAN: PEMAIN 1
+            </div>
+
+            <h3 class="modal-title text-2xl leading-none">MUTIARA HOTS</h3>
+            <div class="inline-block mt-2 mb-4 px-3 py-0.5 rounded-full text-sm font-black font-fredoka text-slate-900" style="background:linear-gradient(180deg,#fde047,#f59e0b)">+5 POIN</div>
+
+            <div class="rounded-2xl p-4 mb-5" style="background:rgba(0,0,0,0.3);border:1px solid rgba(244,114,182,0.35);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4)">
+                <div id="hotsEquationText" class="text-2xl md:text-3xl font-black text-amber-300 font-fredoka tracking-wide">
+                    Aku + 5 = 12. Aku?
+                </div>
+            </div>
+
+            <div id="hotsOptionsContainer" class="grid grid-cols-2 gap-4 mb-5"></div>
+
+            <button onclick="closeHotsModal()" class="btn3d btn3d-sm w-full py-2.5 text-sm tracking-wider" style="--c:#64748b;--d:#334155">
+                <i class="fa-solid fa-xmark"></i><span>TUTUP</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Petunjuk -->
+    <div id="tutorialModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="game-panel max-w-sm w-full p-6 text-white text-center animate-pop-in">
+            <div class="inline-flex w-14 h-14 rounded-2xl items-center justify-center text-2xl mb-2" style="background:linear-gradient(180deg,#fde047,#f59e0b);color:#78350f;box-shadow:0 5px 0 #b45309, inset 0 2px 0 rgba(255,255,255,.5)">
+                <i class="fa-solid fa-hand-pointer"></i>
+            </div>
+            <h3 class="modal-title text-2xl mb-4">CARA MAIN</h3>
+
+            <div class="space-y-2.5 mb-6">
+                <div class="tip-row">
+                    <div class="tip-icon" style="background:linear-gradient(180deg,#fbbf24,#d97706)"><i class="fa-solid fa-fish"></i></div>
+                    <p class="text-sm text-slate-100 leading-snug"><strong class="text-amber-300">Ketuk ikan</strong>, jawab soal. Makin besar ikan, makin banyak poin (+1 / +2 / +3).</p>
+                </div>
+                <div class="tip-row">
+                    <div class="tip-icon" style="background:linear-gradient(180deg,#f472b6,#a855f7)"><i class="fa-solid fa-gem"></i></div>
+                    <p class="text-sm text-slate-100 leading-snug"><strong class="text-pink-300">Mutiara kerang</strong> bernilai +5 poin.</p>
+                </div>
+                <div class="tip-row">
+                    <div class="tip-icon" style="background:linear-gradient(180deg,#c084fc,#7e22ce)"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <p class="text-sm text-slate-100 leading-snug"><strong class="text-fuchsia-300">Ubur-ubur</strong>: jawaban salah mengurangi poin.</p>
+                </div>
+            </div>
+
+            <button onclick="closeTutorialModal()" class="btn3d btn3d-start w-full" style="font-size:1.3rem;padding:13px 20px;animation:none">
+                <i class="fa-solid fa-play"></i><span>LANJUT</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer Developer Credit -->
+    <footer class="glass-panel border-t border-cyan-500/20 py-2 px-4 z-30 text-center relative">
+        <div class="max-w-7xl mx-auto flex items-center justify-center space-x-2 text-xs text-slate-300 font-semibold tracking-wide">
+            <i class="fa-solid fa-code text-amber-400"></i>
+            <span>Developed by <strong class="text-amber-300 font-bold font-fredoka">Ifan Shovi</strong></span>
+        </div>
+    </footer>
+
+
+    <!-- Halaman Cover -->
+    <div id="coverPage">
+        <div class="cover-bg-blur" style="background-image:url('https://i.ibb.co.com/C3kbW5Bw/Mancingmatika-Ocean-Math-Adventure-1.png')"></div>
+        <img class="cover-img" src="https://i.ibb.co.com/C3kbW5Bw/Mancingmatika-Ocean-Math-Adventure-1.png" alt="Mancingmatika - Ocean Math Adventure" draggable="false">
+        <div class="cover-shade"></div>
+        <div class="cover-actions">
+            <button onclick="startFromCover()" class="btn3d btn3d-start btn3d-cover">
+                <i class="fa-solid fa-play"></i><span>MAIN</span>
+            </button>
+            <div class="text-xs text-slate-200/90 font-semibold tracking-wide drop-shadow">Developed by <strong class="text-amber-300 font-fredoka">Ifan Shovi</strong></div>
+        </div>
+    </div>
+
+    <div id="menuModal" class="fixed inset-0 lobby-ocean-bg z-50 flex items-center justify-center p-4 overflow-y-auto no-scrollbar hidden">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="bubble-particle" style="left: 10%; width: 24px; height: 24px; animation-duration: 7s; animation-delay: 0s;"></div>
+            <div class="bubble-particle" style="left: 25%; width: 14px; height: 14px; animation-duration: 9s; animation-delay: 1.5s;"></div>
+            <div class="bubble-particle" style="left: 40%; width: 32px; height: 32px; animation-duration: 11s; animation-delay: 0.5s;"></div>
+            <div class="bubble-particle" style="left: 55%; width: 18px; height: 18px; animation-duration: 8s; animation-delay: 2s;"></div>
+            <div class="bubble-particle" style="left: 70%; width: 28px; height: 28px; animation-duration: 10s; animation-delay: 1s;"></div>
+            <div class="bubble-particle" style="left: 85%; width: 16px; height: 16px; animation-duration: 6s; animation-delay: 2.5s;"></div>
+        </div>
+
+        <div class="relative z-10 w-full max-w-md flex flex-col items-center gap-5 py-4 my-auto">
+
+            <!-- Judul -->
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 text-slate-950 mb-2 border-4 border-amber-100/70 animate-float-slow" style="box-shadow: 0 7px 0 #b45309, 0 14px 20px rgba(0,0,0,0.4);">
+                    <i class="fa-solid fa-fish-fins text-4xl"></i>
+                </div>
+                <h2 class="lobby-title text-3xl md:text-4xl leading-tight">MANCINGMATIKA</h2>
+            </div>
+
+            <!-- Mode -->
+            <div class="lobby-row">
+                <div class="flex gap-3">
+                    <button id="btnModeSolo" onclick="setGameMode('solo')" class="btn3d flex-1 py-4 text-xl" style="--sc:#06b6d4;--sd:#0e7490">
+                        <i class="fa-solid fa-user"></i><span>SOLO</span>
+                    </button>
+                    <button id="btnModeVS" onclick="setGameMode('vs')" class="btn3d flex-1 py-4 text-xl" style="--sc:#f43f5e;--sd:#be123c">
+                        <i class="fa-solid fa-user-group"></i><span>DUEL</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Waktu -->
+            <div class="lobby-row">
+                <div class="flex items-center gap-2">
+                    <div class="lobby-icon text-amber-300"><i class="fa-solid fa-stopwatch"></i></div>
+                    <button data-min="1" onclick="selectTimeLimitMinutes(1)" class="time-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#f59e0b;--sd:#b45309">1</button><button data-min="2" onclick="selectTimeLimitMinutes(2)" class="time-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#f59e0b;--sd:#b45309">2</button><button data-min="3" onclick="selectTimeLimitMinutes(3)" class="time-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#f59e0b;--sd:#b45309">3</button><button data-min="5" onclick="selectTimeLimitMinutes(5)" class="time-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#f59e0b;--sd:#b45309">5</button><button data-min="10" onclick="selectTimeLimitMinutes(10)" class="time-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#f59e0b;--sd:#b45309">10</button><button data-min="15" onclick="selectTimeLimitMinutes(15)" class="time-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#f59e0b;--sd:#b45309">15</button>
+                </div>
+                <div class="flex items-center gap-2 mt-4">
+                    <input type="number" id="customTimeInput" min="1" max="180" placeholder="Menit lain..." oninput="handleCustomTimeInputMinutes(this.value)" class="flex-1 min-w-0 bg-slate-900/80 text-amber-300 placeholder-slate-500 text-sm font-bold px-4 py-2 rounded-2xl border-2 border-slate-600 focus:border-amber-400 focus:outline-none transition">
+                    <span id="customTimeDisplay" class="text-amber-300 font-fredoka font-bold text-sm bg-slate-900/80 px-3 py-2 rounded-2xl border-2 border-amber-500/40 whitespace-nowrap">1 Menit</span>
+                </div>
+            </div>
+
+            <!-- Kelas -->
+            <div class="lobby-row">
+                <div class="flex items-center gap-2">
+                    <div class="lobby-icon text-emerald-300"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <button onclick="selectGrade(1)" class="grade-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#10b981;--sd:#047857">1</button><button onclick="selectGrade(2)" class="grade-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#10b981;--sd:#047857">2</button><button onclick="selectGrade(3)" class="grade-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#10b981;--sd:#047857">3</button><button onclick="selectGrade(4)" class="grade-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#10b981;--sd:#047857">4</button><button onclick="selectGrade(5)" class="grade-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#10b981;--sd:#047857">5</button><button onclick="selectGrade(6)" class="grade-btn btn3d flex-1 py-2.5 text-lg" style="--sc:#10b981;--sd:#047857">6</button>
+                </div>
+            </div>
+
+            <!-- Mulai -->
+            <button onclick="closeMenuModal()" class="btn3d btn3d-start w-full">
+                <i class="fa-solid fa-play"></i><span>MAIN</span>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Modal: Hasil -->
+    <div id="gameOverModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 flex items-center justify-center p-4 hidden">
+        <div class="game-panel max-w-sm w-full p-6 text-white text-center animate-pop-in">
+            <div id="winnerIcon" class="w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl mb-3 animate-float-slow" style="background:linear-gradient(180deg,#fde047,#f59e0b);color:#78350f;box-shadow:0 6px 0 #b45309, 0 12px 20px rgba(0,0,0,.4), inset 0 3px 0 rgba(255,255,255,.55)">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+            <h2 id="winnerTitle" class="modal-title text-2xl mb-1">PEMAIN BIRU MENANG!</h2>
+            <p id="winnerSubtitle" class="text-cyan-200 text-sm mb-5">Luar biasa! Pemancing tercepat & tersmart!</p>
+
+            <div class="rounded-2xl p-4 mb-6 space-y-3" style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);box-shadow:inset 0 2px 8px rgba(0,0,0,0.4)">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-cyan-300 font-bold flex items-center gap-2"><i class="fa-solid fa-user"></i> Biru</span>
+                    <span id="resP1Score" class="text-xl font-black text-cyan-300 font-fredoka">0 Poin</span>
+                </div>
+                <div id="resP2Row" class="flex justify-between items-center text-sm border-t border-slate-700/60 pt-3">
+                    <span class="text-rose-300 font-bold flex items-center gap-2"><i class="fa-solid fa-user-ninja"></i> Merah</span>
+                    <span id="resP2Score" class="text-xl font-black text-rose-300 font-fredoka">0 Poin</span>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="restartGame()" class="btn3d flex-1 py-3.5 text-lg" style="--c:#22c55e;--d:#15803d">
+                    <i class="fa-solid fa-rotate-right"></i><span>ULANG</span>
+                </button>
+                <button onclick="openMenuModal(); hideGameOverModal();" class="btn3d flex-1 py-3.5 text-lg" style="--c:#0ea5e9;--d:#0369a1">
+                    <i class="fa-solid fa-sliders"></i><span>LOBI</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentGrade = 1;
+        let hasShownTutorial = false;
+        let gameMode = 'vs'; // 'solo' or 'vs'
+        let selectedDuration = 60; // default custom timer limit (in seconds)
+        let gameTimer = 60;
+        let turnTimer = 60; // 60 seconds turn timer in Duel Mode
+        let timerInterval = null;
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        // Tinggi permukaan laut (makin besar = laut makin turun / langit makin luas)
+        const SEA_Y = 175;
+
+        // Gambar pemancing (kartun nelayan di perahu kayu)
+        const BOAT_W = 150;
+        const FISHERMAN_IMG = new Image();
+        FISHERMAN_IMG.src = 'https://i.ibb.co.com/JRPtSHkP/Nelayan-Kartun-di-Perahu-Kayu-1.png';
+        function fishermanLoaded() {
+            return FISHERMAN_IMG.complete && FISHERMAN_IMG.naturalWidth > 0;
+        }
+        function getBoatH() {
+            return BOAT_W * FISHERMAN_IMG.naturalHeight / FISHERMAN_IMG.naturalWidth;
+        }
+        // Posisi ujung pancing (tempat tali keluar)
+        function getRodTip(boatX, waveY, player) {
+            const dir = player === 1 ? 1 : -1;
+            if (!fishermanLoaded()) return { x: boatX + dir * 58, y: waveY - 48 };
+            return { x: boatX + dir * BOAT_W * 0.40, y: waveY + 10 - getBoatH() * 0.75 };
+        }
+
+        // Player Name State
+        let p1Name = "Pemain 1";
+        let p2Name = "Pemain 2";
+        let currentTurn = 1; // 1 or 2
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTone(freq, type, duration) {
+            if (!soundEnabled) return;
+            initAudio();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            if (!soundEnabled) return;
+            initAudio();
+            const now = audioCtx.currentTime;
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                gain.gain.setValueAtTime(0.15, now + i * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + i * 0.08);
+                osc.stop(now + i * 0.08 + 0.2);
+            });
+        }
+
+        function playFailSound() {
+            if (!soundEnabled) return;
+            initAudio();
+            const now = audioCtx.currentTime;
+            [220, 196, 174].forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, now + i * 0.1);
+                gain.gain.setValueAtTime(0.12, now + i * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.18);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + i * 0.1);
+                osc.stop(now + i * 0.1 + 0.18);
+            });
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high text-amber-400 text-lg' : 'fa-solid fa-volume-xmark text-rose-400 text-lg';
+        }
+
+        // Math Problem Generator according to Indonesian SD Grade curriculum
+        function generateMathProblem(grade) {
+            let num1, num2, answer, equation;
+
+            switch(grade) {
+                case 1:
+                    if (Math.random() > 0.5) {
+                        num1 = Math.floor(Math.random() * 10) + 1;
+                        num2 = Math.floor(Math.random() * 10) + 1;
+                        equation = `${num1} + ${num2}`;
+                        answer = num1 + num2;
+                    } else {
+                        num1 = Math.floor(Math.random() * 15) + 5;
+                        num2 = Math.floor(Math.random() * num1) + 1;
+                        equation = `${num1} - ${num2}`;
+                        answer = num1 - num2;
+                    }
+                    break;
+                case 2:
+                    if (Math.random() < 0.5) {
+                        num1 = Math.floor(Math.random() * 35) + 10;
+                        num2 = Math.floor(Math.random() * 35) + 10;
+                        equation = `${num1} + ${num2}`;
+                        answer = num1 + num2;
+                    } else {
+                        num1 = Math.floor(Math.random() * 5) + 1;
+                        num2 = Math.floor(Math.random() * 8) + 1;
+                        equation = `${num1} × ${num2}`;
+                        answer = num1 * num2;
+                    }
+                    break;
+                case 3:
+                    if (Math.random() < 0.5) {
+                        num1 = Math.floor(Math.random() * 9) + 2;
+                        num2 = Math.floor(Math.random() * 9) + 2;
+                        equation = `${num1} × ${num2}`;
+                        answer = num1 * num2;
+                    } else {
+                        num2 = Math.floor(Math.random() * 8) + 2;
+                        answer = Math.floor(Math.random() * 9) + 2;
+                        num1 = num2 * answer;
+                        equation = `${num1} ÷ ${num2}`;
+                    }
+                    break;
+                case 4:
+                    if (Math.random() < 0.5) {
+                        num1 = Math.floor(Math.random() * 14) + 4;
+                        num2 = Math.floor(Math.random() * 11) + 2;
+                        equation = `${num1} × ${num2}`;
+                        answer = num1 * num2;
+                    } else {
+                        let a = Math.floor(Math.random() * 20) + 10;
+                        let b = Math.floor(Math.random() * 10) + 5;
+                        let c = Math.floor(Math.random() * 5) + 2;
+                        equation = `${a} + ${b} × ${c}`;
+                        answer = a + (b * c);
+                    }
+                    break;
+                case 5:
+                    const type5 = Math.floor(Math.random() * 3); // 0: persen, 1: persamaan, 2: olimpiade
+                    if (type5 === 0) {
+                        // Soal persentase/pecahan - dijamin hasil bilangan cacah (bulat), tanpa desimal
+                        const pctOptions = [
+                            { pct: 10, den: 10, num: 1 },
+                            { pct: 20, den: 5, num: 1 },
+                            { pct: 25, den: 4, num: 1 },
+                            { pct: 50, den: 2, num: 1 },
+                            { pct: 75, den: 4, num: 3 }
+                        ];
+                        const chosenPct = pctOptions[Math.floor(Math.random() * pctOptions.length)];
+                        const kPct = Math.floor(Math.random() * 6) + 2;
+                        const basePct = kPct * chosenPct.den;
+                        equation = `${chosenPct.pct}% dari ${basePct}`;
+                        answer = kPct * chosenPct.num;
+                    } else if (type5 === 1) {
+                        // Soal persamaan matematika dasar (aljabar sederhana), jawaban x bilangan cacah
+                        const xVal = Math.floor(Math.random() * 10) + 1;
+                        const aCoef = Math.floor(Math.random() * 4) + 2;
+                        const eqForm = Math.floor(Math.random() * 3);
+                        if (eqForm === 0) {
+                            const bAdd = Math.floor(Math.random() * 15) + 1;
+                            equation = `${aCoef}x + ${bAdd} = ${aCoef * xVal + bAdd}`;
+                        } else if (eqForm === 1) {
+                            const bSub = Math.floor(Math.random() * 15) + 1;
+                            equation = `${aCoef}x - ${bSub} = ${aCoef * xVal - bSub}`;
+                        } else {
+                            equation = `${aCoef}x = ${aCoef * xVal}`;
+                        }
+                        answer = xVal;
+                    } else {
+                        // Soal olimpiade matematika dasar (pola bilangan, FPB, KPK)
+                        const olyType = Math.floor(Math.random() * 3);
+                        if (olyType === 0) {
+                            // Pola bilangan (barisan aritmetika)
+                            const startN = Math.floor(Math.random() * 8) + 1;
+                            const stepN = Math.floor(Math.random() * 5) + 2;
+                            equation = `${startN}, ${startN + stepN}, ${startN + stepN * 2}, ?`;
+                            answer = startN + stepN * 3;
+                        } else if (olyType === 1) {
+                            // FPB (Faktor Persekutuan Terbesar)
+                            const gcdBase = Math.floor(Math.random() * 8) + 2;
+                            const fA = gcdBase * (Math.floor(Math.random() * 3) + 2);
+                            const fB = gcdBase * (Math.floor(Math.random() * 3) + 2);
+                            equation = `FPB dari ${fA} & ${fB}`;
+                            const gcdCalc = (x, y) => y === 0 ? x : gcdCalc(y, x % y);
+                            answer = gcdCalc(fA, fB);
+                        } else {
+                            // KPK (Kelipatan Persekutuan Terkecil)
+                            const lcmA = Math.floor(Math.random() * 6) + 2;
+                            const lcmB = Math.floor(Math.random() * 6) + 2;
+                            equation = `KPK dari ${lcmA} & ${lcmB}`;
+                            const gcdCalc2 = (x, y) => y === 0 ? x : gcdCalc2(y, x % y);
+                            answer = (lcmA * lcmB) / gcdCalc2(lcmA, lcmB);
+                        }
+                    }
+                    break;
+                case 6:
+                    num1 = Math.floor(Math.random() * 12) - 6;
+                    num2 = Math.floor(Math.random() * 12) + 1;
+                    equation = `(${num1}) + ${num2}`;
+                    answer = num1 + num2;
+                    break;
+            }
+
+            const distractors = new Set();
+            distractors.add(answer.toString());
+
+            let attempts = 0;
+            while (distractors.size < 4 && attempts < 40) {
+                attempts++;
+                let delta = (Math.floor(Math.random() * 4) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                let fakeAns = answer + delta;
+                distractors.add(fakeAns.toString());
+            }
+
+            const options = Array.from(distractors).sort(() => Math.random() - 0.5);
+
+            return { equation, answer: answer.toString(), options };
+        }
+
+        // Generate HOTS (Higher Order Thinking Skills) Problem for Pearl Clam
+        function generateHOTSProblem(grade) {
+            let equation, answer;
+            switch(grade) {
+                case 1:
+                    if (Math.random() > 0.5) {
+                        let target = Math.floor(Math.random() * 8) + 6;
+                        let add = Math.floor(Math.random() * 4) + 2;
+                        answer = target - add;
+                        equation = `Aku + ${add} = ${target}. Aku?`;
+                    } else {
+                        let pairs = Math.floor(Math.random() * 4) + 2;
+                        answer = pairs * 2;
+                        equation = `${pairs} pasang sepatu = ... buah`;
+                    }
+                    break;
+                case 2:
+                    if (Math.random() > 0.5) {
+                        let base = Math.floor(Math.random() * 5) + 2;
+                        answer = base + 5;
+                        equation = `Setengah dari ${base * 2} + 5`;
+                    } else {
+                        let a = Math.floor(Math.random() * 5) + 3;
+                        let b = Math.floor(Math.random() * 4) + 2;
+                        answer = (a * b) + 10;
+                        equation = `(${a} × ${b}) + 10`;
+                    }
+                    break;
+                case 3:
+                    if (Math.random() > 0.5) {
+                        let a = Math.floor(Math.random() * 5) + 2;
+                        answer = a * 10;
+                        equation = `1/4 dari ${a * 40}`;
+                    } else {
+                        let a = Math.floor(Math.random() * 6) + 4;
+                        let b = Math.floor(Math.random() * 4) + 2;
+                        answer = a * 3;
+                        equation = `(${a * b} ÷ ${b}) × 3`;
+                    }
+                    break;
+                case 4:
+                    if (Math.random() > 0.5) {
+                        let a = Math.floor(Math.random() * 4) + 2;
+                        answer = (a * a) + ((a + 2) * (a + 2));
+                        equation = `${a}² + ${a + 2}²`;
+                    } else {
+                        let p = [20, 30, 40, 50][Math.floor(Math.random() * 4)];
+                        let num = 200;
+                        answer = (p / 100 * num) + 15;
+                        equation = `${p}% dari ${num} + 15`;
+                    }
+                    break;
+                case 5:
+                    let hots5Type = Math.floor(Math.random() * 3);
+                    if (hots5Type === 0) {
+                        let sq = [16, 25, 36, 49, 64, 81][Math.floor(Math.random() * 6)];
+                        answer = Math.sqrt(sq) + 9;
+                        equation = `√${sq} + 3²`;
+                    } else if (hots5Type === 1) {
+                        let a = Math.floor(Math.random() * 5) + 2;
+                        answer = (3 / 5 * a * 25) - 4;
+                        equation = `3/5 dari ${a * 25} - 4`;
+                    } else {
+                        // Olimpiade dasar tingkat lanjut: gabungan persamaan & pola bilangan
+                        let oly5 = Math.floor(Math.random() * 2);
+                        if (oly5 === 0) {
+                            let xV = Math.floor(Math.random() * 8) + 2;
+                            let aC = Math.floor(Math.random() * 3) + 2;
+                            let bC = Math.floor(Math.random() * 3) + 2;
+                            answer = xV;
+                            equation = `${aC}x + ${bC}x = ${(aC + bC) * xV}, x?`;
+                        } else {
+                            let startO = Math.floor(Math.random() * 5) + 2;
+                            let ratioO = 2;
+                            answer = startO * Math.pow(ratioO, 4);
+                            equation = `${startO}, ${startO * 2}, ${startO * 4}, ${startO * 8}, ?`;
+                        }
+                    }
+                    break;
+                case 6:
+                    if (Math.random() > 0.5) {
+                        let neg = -1 * (Math.floor(Math.random() * 5) + 2);
+                        let pos = Math.floor(Math.random() * 8) + 10;
+                        answer = (neg + pos) * 4;
+                        equation = `(${neg} + ${pos}) × 4`;
+                    } else {
+                        let sq = [64, 81, 100, 144][Math.floor(Math.random() * 4)];
+                        answer = 8 + Math.sqrt(sq) - 5;
+                        equation = `2³ + √${sq} - 5`;
+                    }
+                    break;
+            }
+
+            const distractors = new Set();
+            distractors.add(answer.toString());
+            let attempts = 0;
+            while (distractors.size < 4 && attempts < 40) {
+                attempts++;
+                let delta = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                let fakeAns = answer + delta;
+                distractors.add(fakeAns.toString());
+            }
+
+            const options = Array.from(distractors).sort(() => Math.random() - 0.5);
+            return { equation, answer: answer.toString(), options };
+        }
+
+        const REALISTIC_FISH_SPECIES = [
+            { name: 'Clownfish', bodyMain: '#ff6b00', bodySub: '#d93800', stripe: '#ffffff', finColor: '#e04f00', type: 'clown' },
+            { name: 'Royal Tang', bodyMain: '#1d4ed8', bodySub: '#1e3a8a', stripe: '#facc15', finColor: '#2563eb', type: 'tang' },
+            { name: 'Red Snapper', bodyMain: '#ef4444', bodySub: '#b91c1c', stripe: '#fca5a5', finColor: '#dc2626', type: 'snapper' },
+            { name: 'Golden Bass', bodyMain: '#f59e0b', bodySub: '#b45309', stripe: '#fef08a', finColor: '#d97706', type: 'bass' },
+            { name: 'Emerald Discus', bodyMain: '#10b981', bodySub: '#047857', stripe: '#a7f3d0', finColor: '#059669', type: 'discus' }
+        ];
+
+        const JELLYFISH_SPECIES = [
+            { bell: '#c084fc', bellCore: '#7e22ce', glow: 'rgba(192, 132, 252, 0.5)', tentacle: '#e9d5ff' },
+            { bell: '#38bdf8', bellCore: '#0369a1', glow: 'rgba(56, 189, 248, 0.5)', tentacle: '#bae6fd' },
+            { bell: '#fb7185', bellCore: '#be123c', glow: 'rgba(251, 113, 133, 0.5)', tentacle: '#fecdd3' }
+        ];
+
+        class OceanWorld {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.p1Score = 0;
+                this.p2Score = 0;
+                this.fishes = [];
+                this.jellyfishes = [];
+                this.selectedJellyfish = null;
+                this.bubbles = [];
+                this.lightRays = [];
+                this.clouds = [];
+                this.seaweeds = [];
+                this.anemones = [];
+                this.starfish = [];
+                this.selectedFish = null;
+                this.clam = null;
+
+                this.fishingLine = {
+                    active: false,
+                    player: 1, // 1 or 2
+                    hookX: 0,
+                    hookY: 0,
+                    targetX: 0,
+                    targetY: 0,
+                    baitText: '',
+                    state: 'idle',
+                    isClamTarget: false
+                };
+
+                this.initListeners();
+            }
+
+            getWaveY(x, timestamp) {
+                const baseY = SEA_Y;
+                const w1 = Math.sin(x * 0.02 + timestamp * 0.003) * 6;
+                const w2 = Math.cos(x * 0.04 - timestamp * 0.002) * 3;
+                return baseY + w1 + w2;
+            }
+
+            resize() {
+                this.width = this.canvas.width = this.canvas.parentElement.clientWidth;
+                this.height = this.canvas.height = this.canvas.parentElement.clientHeight;
+
+                this.fishes = [];
+                for (let i = 0; i < 5; i++) {
+                    this.fishes.push(this.createFish());
+                }
+
+                // Jellyfish (risiko: jawaban benar = tambah poin, jawaban salah = kurangi poin)
+                this.jellyfishes = [];
+                this.selectedJellyfish = null;
+                for (let i = 0; i < 2; i++) {
+                    this.jellyfishes.push(this.createJellyfish());
+                }
+
+                // Ambient Drifting Clouds
+                this.clouds = Array.from({ length: 5 }, () => ({
+                    x: Math.random() * (this.width + 100) - 50,
+                    y: 10 + Math.random() * (SEA_Y - 70),
+                    scale: 0.6 + Math.random() * 0.6,
+                    speed: 0.15 + Math.random() * 0.25
+                }));
+
+                // Ambient Bubbles
+                this.bubbles = Array.from({ length: 25 }, () => ({
+                    x: Math.random() * this.width,
+                    y: Math.random() * this.height,
+                    radius: 1.5 + Math.random() * 4,
+                    speed: 0.4 + Math.random() * 0.8,
+                    wobble: Math.random() * Math.PI * 2
+                }));
+
+                // Ambient Rays
+                this.lightRays = Array.from({ length: 6 }, (_, i) => ({
+                    x: (this.width / 5) * i + Math.random() * 30,
+                    width: 30 + Math.random() * 50,
+                    alpha: 0.05 + Math.random() * 0.08
+                }));
+
+                // Seabed Pearl Clam - posisi dihitung lebih dulu (di pinggir) agar dekorasi lain bisa menghindarinya
+                const clamX = this.width * 0.12;
+                const clamExclusionRadius = 95; // jarak aman agar tidak tumpukan dengan makhluk/dekorasi lain
+
+                const pickSeabedX = () => {
+                    let x, attempts = 0;
+                    do {
+                        x = Math.random() * this.width;
+                        attempts++;
+                    } while (Math.abs(x - clamX) < clamExclusionRadius && attempts < 30);
+                    // Jika masih gagal setelah beberapa percobaan, paksa geser keluar dari zona kerang
+                    if (Math.abs(x - clamX) < clamExclusionRadius) {
+                        x = clamX + clamExclusionRadius + Math.random() * (this.width - clamX - clamExclusionRadius);
+                    }
+                    return x;
+                };
+
+                // Seabed Seaweeds
+                this.seaweeds = Array.from({ length: 10 }, () => ({
+                    x: pickSeabedX(),
+                    height: 40 + Math.random() * 60,
+                    blades: 3 + Math.floor(Math.random() * 3),
+                    phase: Math.random() * Math.PI * 2
+                }));
+
+                // Seabed Sea Anemones
+                const anemoneHues = [
+                    { core: '#f472b6', tip: '#fbcfe8' },
+                    { core: '#c084fc', tip: '#f5d0fe' },
+                    { core: '#fb7185', tip: '#fecdd3' }
+                ];
+                this.anemones = Array.from({ length: 5 }, () => ({
+                    x: pickSeabedX(),
+                    size: 12 + Math.random() * 10,
+                    tentacles: 9 + Math.floor(Math.random() * 4),
+                    phase: Math.random() * Math.PI * 2,
+                    hue: anemoneHues[Math.floor(Math.random() * anemoneHues.length)]
+                }));
+
+                // Seabed Starfish
+                const starfishColors = ['#f97316', '#fb923c', '#f43f5e', '#ec4899', '#fbbf24'];
+                this.starfish = Array.from({ length: 6 }, () => ({
+                    x: pickSeabedX(),
+                    yOffset: Math.random() * 6,
+                    size: 9 + Math.random() * 7,
+                    rotation: Math.random() * Math.PI * 2,
+                    color: starfishColors[Math.floor(Math.random() * starfishColors.length)],
+                    bobPhase: Math.random() * Math.PI * 2
+                }));
+
+                // Seabed Pearl Clam - diletakkan di pinggir agar opsi jawaban tetap terlihat jelas
+                this.clam = {
+                    x: clamX,
+                    y: this.height - 24,
+                    size: 28,
+                    isOpen: false,
+                    openProgress: 0,
+                    timer: 100 + Math.random() * 200,
+                    problem: null,
+                    isSelected: false,
+                    points: 5,
+                    isShaking: false,
+                    shakeTimer: 0
+                };
+            }
+
+            createFish() {
+                const sp = REALISTIC_FISH_SPECIES[Math.floor(Math.random() * REALISTIC_FISH_SPECIES.length)];
+                const problem = generateMathProblem(currentGrade);
+                
+                const levelRoll = Math.random();
+                let sizeLevel = 1;
+                let baseRadius = 28;
+                let points = 1;
+                let levelTag = 'L1';
+
+                if (levelRoll > 0.65) {
+                    sizeLevel = 3;
+                    baseRadius = 52;
+                    points = 3;
+                    levelTag = 'L3';
+                } else if (levelRoll > 0.3) {
+                    sizeLevel = 2;
+                    baseRadius = 40;
+                    points = 2;
+                    levelTag = 'L2';
+                }
+
+                return {
+                    problem,
+                    species: sp,
+                    sizeLevel,
+                    levelTag,
+                    points,
+                    size: baseRadius,
+                    x: Math.random() > 0.5 ? -80 : this.width + 80,
+                    y: (SEA_Y + 75) + Math.random() * (this.height - SEA_Y - 155),
+                    speed: (0.6 + Math.random() * 0.6) * (Math.random() > 0.5 ? 1 : -1),
+                    tailPhase: Math.random() * Math.PI * 2,
+                    finPhase: Math.random() * Math.PI * 2,
+                    isSelected: false,
+                    isShaking: false,
+                    shakeTimer: 0,
+                    blinkTimer: 60 + Math.floor(Math.random() * 240),
+                    isBlinking: false,
+                    blinkFrame: 0
+                };
+            }
+
+            createJellyfish() {
+                const sp = JELLYFISH_SPECIES[Math.floor(Math.random() * JELLYFISH_SPECIES.length)];
+                const problem = generateMathProblem(currentGrade);
+                const size = 26 + Math.random() * 10;
+                const points = 4;
+
+                return {
+                    problem,
+                    species: sp,
+                    points,
+                    size,
+                    x: Math.random() * this.width,
+                    y: (SEA_Y + 45) + Math.random() * (this.height * 0.4),
+                    baseY: 0,
+                    driftSpeed: (0.25 + Math.random() * 0.25) * (Math.random() > 0.5 ? 1 : -1),
+                    bobPhase: Math.random() * Math.PI * 2,
+                    tentaclePhase: Math.random() * Math.PI * 2,
+                    isSelected: false,
+                    isShaking: false,
+                    shakeTimer: 0
+                };
+            }
+
+            initListeners() {
+                this.canvas.addEventListener('click', (e) => {
+                    if (this.fishingLine.active) return;
+                    const rect = this.canvas.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const clickY = e.clientY - rect.top;
+
+                    // Check Clam Pearl Click
+                    if (this.clam && this.clam.isOpen) {
+                        const clamDist = Math.hypot(this.clam.x - clickX, (this.clam.y - 12) - clickY);
+                        if (clamDist < this.clam.size + 24) {
+                            openHotsModal();
+                            return;
+                        }
+                    }
+
+                    // Check Jellyfish Click
+                    this.jellyfishes.forEach(jelly => {
+                        const dist = Math.hypot(jelly.x - clickX, jelly.y - clickY);
+                        if (dist < jelly.size + 24) {
+                            this.selectJellyfish(jelly);
+                        }
+                    });
+
+                    // Check Fish Click
+                    this.fishes.forEach(fish => {
+                        const dist = Math.hypot(fish.x - clickX, fish.y - clickY);
+                        if (dist < fish.size + 24) {
+                            this.selectFish(fish);
+                        }
+                    });
+                });
+            }
+
+            selectFish(fish) {
+                this.fishes.forEach(f => f.isSelected = false);
+                this.jellyfishes.forEach(j => j.isSelected = false);
+                this.selectedJellyfish = null;
+                this.selectedFish = fish;
+                this.selectedFish.isSelected = true;
+
+                playTone(550, 'sine', 0.1);
+
+                const activePlayerName = currentTurn === 1 ? p1Name : p2Name;
+                const header = document.getElementById('baitHeader');
+                if (header) header.innerText = `UMPAN JAWABAN (${activePlayerName})`;
+
+                const container = document.getElementById('baitContainer');
+                container.innerHTML = '';
+
+                fish.problem.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn3d btn3d-sm py-2.5 px-3 text-lg'; btn.style.cssText = '--c:#f59e0b;--d:#b45309';
+                    btn.innerHTML = `<i class="fa-solid fa-worm text-xs opacity-80"></i> <span>${opt}</span>`;
+                    btn.onclick = () => this.throwBait(opt, false, false);
+                    container.appendChild(btn);
+                });
+
+                const baitPanel = document.getElementById('baitPanel');
+                baitPanel.classList.remove('translate-y-28', 'opacity-0');
+                baitPanel.classList.add('translate-y-0', 'opacity-100');
+            }
+
+            selectJellyfish(jelly) {
+                this.fishes.forEach(f => f.isSelected = false);
+                this.selectedFish = null;
+                this.jellyfishes.forEach(j => j.isSelected = false);
+                this.selectedJellyfish = jelly;
+                this.selectedJellyfish.isSelected = true;
+
+                playTone(650, 'sine', 0.1);
+
+                const activePlayerName = currentTurn === 1 ? p1Name : p2Name;
+                const header = document.getElementById('baitHeader');
+                if (header) header.innerText = `⚠ UBUR-UBUR (${activePlayerName}) - SALAH = POIN BERKURANG!`;
+
+                const container = document.getElementById('baitContainer');
+                container.innerHTML = '';
+
+                jelly.problem.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn3d btn3d-sm py-2.5 px-3 text-lg'; btn.style.cssText = '--c:#a855f7;--d:#6b21a8';
+                    btn.innerHTML = `<i class="fa-solid fa-worm text-xs opacity-80"></i> <span>${opt}</span>`;
+                    btn.onclick = () => this.throwBait(opt, false, true);
+                    container.appendChild(btn);
+                });
+
+                const baitPanel = document.getElementById('baitPanel');
+                baitPanel.classList.remove('translate-y-28', 'opacity-0');
+                baitPanel.classList.add('translate-y-0', 'opacity-100');
+            }
+
+            deselectFish() {
+                if (this.selectedFish) this.selectedFish.isSelected = false;
+                this.selectedFish = null;
+                if (this.selectedJellyfish) this.selectedJellyfish.isSelected = false;
+                this.selectedJellyfish = null;
+                closeBaitPanel();
+            }
+
+            throwBait(chosenOpt, isClam = false, isJelly = false) {
+                if (this.fishingLine.active) return;
+                if (!isClam && !isJelly && !this.selectedFish) return;
+                if (isClam && (!this.clam || !this.clam.isOpen)) return;
+                if (isJelly && !this.selectedJellyfish) return;
+
+                const player = currentTurn;
+                const boatX = gameMode === 'vs' ? (player === 1 ? this.width * 0.25 : this.width * 0.75) : this.width * 0.5;
+
+                this.fishingLine.active = true;
+                this.fishingLine.player = player;
+                this.fishingLine.isClamTarget = isClam;
+                this.fishingLine.isJellyTarget = isJelly;
+                const tip0 = getRodTip(boatX, this.getWaveY(boatX, performance.now()), player);
+                this.fishingLine.hookX = tip0.x;
+                this.fishingLine.hookY = tip0.y;
+
+                if (isClam) {
+                    this.fishingLine.targetX = this.clam.x;
+                    this.fishingLine.targetY = this.clam.y - 12;
+                } else if (isJelly) {
+                    this.fishingLine.targetX = this.selectedJellyfish.x;
+                    this.fishingLine.targetY = this.selectedJellyfish.y - this.selectedJellyfish.size * 0.7;
+                } else {
+                    this.fishingLine.targetX = this.selectedFish.x;
+                    this.fishingLine.targetY = this.selectedFish.y - this.selectedFish.size * 0.7;
+                }
+
+                this.fishingLine.baitText = chosenOpt;
+                this.fishingLine.state = 'casting';
+
+                playTone(400, 'triangle', 0.15);
+                closeBaitPanel();
+            }
+
+            processBait() {
+                const player = this.fishingLine.player;
+
+                if (this.fishingLine.isClamTarget) {
+                    if (!this.clam || !this.clam.problem) return;
+                    const isCorrect = this.fishingLine.baitText === this.clam.problem.answer;
+
+                    if (isCorrect) {
+                        playSuccessSound();
+                        this.fishingLine.state = 'reeling';
+                    } else {
+                        playFailSound();
+                        this.clam.isShaking = true;
+                        this.clam.shakeTimer = 0;
+                        setTimeout(() => {
+                            this.fishingLine.active = false;
+                            this.deselectFish();
+                            if (gameMode === 'vs') switchTurn();
+                        }, 500);
+                    }
+                } else if (this.fishingLine.isJellyTarget) {
+                    if (!this.selectedJellyfish || !this.selectedJellyfish.problem) return;
+                    const isCorrect = this.fishingLine.baitText === this.selectedJellyfish.problem.answer;
+
+                    if (isCorrect) {
+                        playTone(800, 'sine', 0.15);
+                        this.fishingLine.state = 'reeling';
+                    } else {
+                        // Jawaban salah pada ubur-ubur: poin dikurangi
+                        playFailSound();
+                        const penalty = this.selectedJellyfish.points;
+                        if (player === 1) {
+                            this.p1Score = Math.max(0, this.p1Score - penalty);
+                            document.getElementById('p1ScoreText').innerText = `${this.p1Score} Poin`;
+                        } else {
+                            this.p2Score = Math.max(0, this.p2Score - penalty);
+                            document.getElementById('p2ScoreText').innerText = `${this.p2Score} Poin`;
+                        }
+                        this.selectedJellyfish.isShaking = true;
+                        this.selectedJellyfish.shakeTimer = 0;
+                        setTimeout(() => {
+                            this.fishingLine.active = false;
+                            this.deselectFish();
+                            if (gameMode === 'vs') switchTurn();
+                        }, 500);
+                    }
+                } else {
+                    if (!this.selectedFish) return;
+                    const isCorrect = this.fishingLine.baitText === this.selectedFish.problem.answer;
+
+                    if (isCorrect) {
+                        playTone(800, 'sine', 0.15);
+                        this.fishingLine.state = 'reeling';
+                    } else {
+                        playFailSound();
+                        this.selectedFish.isShaking = true;
+                        this.selectedFish.shakeTimer = 0;
+                        setTimeout(() => {
+                            this.fishingLine.active = false;
+                            this.deselectFish();
+                            if (gameMode === 'vs') switchTurn();
+                        }, 500);
+                    }
+                }
+            }
+
+            drawEnvironment(timestamp) {
+                const ctx = this.ctx;
+                const w = this.width;
+                const h = this.height;
+
+                // Sky Gradient above waves
+                const skyGrad = ctx.createLinearGradient(0, 0, 0, SEA_Y + 5);
+                skyGrad.addColorStop(0, '#f0f9ff');
+                skyGrad.addColorStop(0.5, '#e0f2fe');
+                skyGrad.addColorStop(1, '#7dd3fc');
+                ctx.fillStyle = skyGrad;
+                ctx.fillRect(0, 0, w, SEA_Y + 5);
+
+                // Clouds
+                ctx.save();
+                this.clouds.forEach(cloud => {
+                    cloud.x += cloud.speed;
+                    if (cloud.x > w + 80) cloud.x = -80;
+
+                    ctx.save();
+                    ctx.translate(cloud.x, cloud.y);
+                    ctx.scale(cloud.scale, cloud.scale);
+                    
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 14, 0, Math.PI * 2);
+                    ctx.arc(12, -8, 17, 0, Math.PI * 2);
+                    ctx.arc(28, -5, 14, 0, Math.PI * 2);
+                    ctx.arc(38, 2, 11, 0, Math.PI * 2);
+                    ctx.arc(20, 5, 15, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                });
+                ctx.restore();
+
+                // Deep Water Realistic Gradient
+                const waterGrad = ctx.createLinearGradient(0, SEA_Y - 5, 0, h);
+                waterGrad.addColorStop(0, '#2b8fc9');
+                waterGrad.addColorStop(0.35, '#126aa3');
+                waterGrad.addColorStop(0.7, '#0a4a7c');
+                waterGrad.addColorStop(1, '#06304f');
+                ctx.fillStyle = waterGrad;
+
+                // Render Wavy Surface
+                ctx.beginPath();
+                ctx.moveTo(0, h);
+                ctx.lineTo(0, this.getWaveY(0, timestamp));
+
+                for (let x = 0; x <= w; x += 8) {
+                    ctx.lineTo(x, this.getWaveY(x, timestamp));
+                }
+
+                ctx.lineTo(w, h);
+                ctx.closePath();
+                ctx.fill();
+
+                // Wave Crest Highlights
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(0, this.getWaveY(0, timestamp));
+                for (let x = 0; x <= w; x += 8) {
+                    ctx.lineTo(x, this.getWaveY(x, timestamp));
+                }
+                ctx.stroke();
+
+                // Seabed Sand & Seaweeds
+                const sandGrad = ctx.createLinearGradient(0, h - 35, 0, h);
+                sandGrad.addColorStop(0, 'rgba(217, 119, 6, 0.3)');
+                sandGrad.addColorStop(1, 'rgba(120, 53, 15, 0.8)');
+                ctx.fillStyle = sandGrad;
+                ctx.beginPath();
+                ctx.moveTo(0, h);
+                ctx.quadraticCurveTo(w * 0.3, h - 30, w * 0.6, h - 20);
+                ctx.quadraticCurveTo(w * 0.85, h - 10, w, h - 25);
+                ctx.lineTo(w, h);
+                ctx.closePath();
+                ctx.fill();
+
+                // Seaweeds
+                ctx.save();
+                this.seaweeds.forEach(sw => {
+                    const sway = Math.sin(timestamp * 0.002 + sw.phase) * 12;
+                    ctx.strokeStyle = '#047857';
+                    ctx.lineWidth = 4;
+                    ctx.lineCap = 'round';
+                    for (let i = 0; i < sw.blades; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(sw.x + i * 6, h - 15);
+                        ctx.quadraticCurveTo(sw.x + sway + i * 4, h - sw.height / 2, sw.x + sway * 1.5 + i * 8, h - sw.height);
+                        ctx.stroke();
+                    }
+                });
+                ctx.restore();
+
+                // Sea Anemones
+                ctx.save();
+                this.anemones.forEach(an => {
+                    ctx.save();
+                    ctx.translate(an.x, h - 12);
+
+                    // Base/foot of the anemone
+                    ctx.fillStyle = an.hue.core;
+                    ctx.beginPath();
+                    ctx.ellipse(0, 6, an.size * 0.55, an.size * 0.22, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    for (let i = 0; i < an.tentacles; i++) {
+                        const spread = (i / (an.tentacles - 1)) * Math.PI - Math.PI / 2;
+                        const sway = Math.sin(timestamp * 0.0025 + an.phase + i) * 10;
+                        const tipX = Math.sin(spread) * an.size * 1.1 + sway;
+                        const tipY = -an.size * 1.3 + Math.cos(spread) * 4;
+
+                        const grad = ctx.createLinearGradient(0, 0, tipX, tipY);
+                        grad.addColorStop(0, an.hue.core);
+                        grad.addColorStop(1, an.hue.tip);
+                        ctx.strokeStyle = grad;
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.quadraticCurveTo(tipX * 0.5 + sway * 0.4, -an.size * 0.6, tipX, tipY);
+                        ctx.stroke();
+
+                        ctx.fillStyle = an.hue.tip;
+                        ctx.beginPath();
+                        ctx.arc(tipX, tipY, 2.2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                });
+                ctx.restore();
+
+                // Starfish
+                ctx.save();
+                this.starfish.forEach(st => {
+                    const bob = Math.sin(timestamp * 0.0015 + st.bobPhase) * 1.5;
+                    ctx.save();
+                    ctx.translate(st.x, h - 8 - st.yOffset + bob);
+                    ctx.rotate(st.rotation);
+
+                    ctx.fillStyle = st.color;
+                    ctx.beginPath();
+                    const spikes = 5;
+                    const outerR = st.size;
+                    const innerR = st.size * 0.42;
+                    for (let i = 0; i < spikes * 2; i++) {
+                        const r = i % 2 === 0 ? outerR : innerR;
+                        const angle = (i * Math.PI) / spikes - Math.PI / 2;
+                        const px = Math.cos(angle) * r;
+                        const py = Math.sin(angle) * r * 0.55;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Texture dots
+                    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+                    for (let d = 0; d < 4; d++) {
+                        const da = (d / 4) * Math.PI * 2;
+                        ctx.beginPath();
+                        ctx.arc(Math.cos(da) * st.size * 0.3, Math.sin(da) * st.size * 0.18, 1, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                });
+                ctx.restore();
+
+                // Air Bubbles
+                ctx.save();
+                this.bubbles.forEach(b => {
+                    b.y -= b.speed;
+                    b.wobble += 0.03;
+                    const bx = b.x + Math.sin(b.wobble) * 2;
+                    if (b.y < SEA_Y + 5) {
+                        b.y = h + 10;
+                        b.x = Math.random() * w;
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(bx, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                });
+                ctx.restore();
+            }
+
+            drawClam(timestamp) {
+                const ctx = this.ctx;
+                const clam = this.clam;
+                if (!clam) return;
+
+                clam.timer++;
+                if (!clam.isOpen) {
+                    if (clam.timer > 600) { // Opens every ~10s
+                        clam.isOpen = true;
+                        clam.timer = 0;
+                        clam.problem = generateHOTSProblem(currentGrade);
+                    }
+                } else {
+                    if (clam.timer > 450) { // Stays open ~7.5s
+                        clam.isOpen = false;
+                        clam.timer = 0;
+                    }
+                }
+
+                const targetProgress = clam.isOpen ? 1 : 0;
+                clam.openProgress += (targetProgress - clam.openProgress) * 0.1;
+
+                ctx.save();
+                ctx.translate(clam.x, clam.y);
+
+                if (clam.isShaking) {
+                    clam.shakeTimer++;
+                    if (clam.shakeTimer > 25) clam.isShaking = false;
+                    ctx.translate(Math.sin(clam.shakeTimer * 1.5) * 6, 0);
+                }
+
+                const cs = clam.size;
+
+                // Bottom Shell Base
+                ctx.fillStyle = '#9a3412';
+                ctx.beginPath();
+                ctx.ellipse(0, 5, cs, cs * 0.42, 0, 0, Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#451a03';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Inner Bed
+                ctx.fillStyle = '#fbcfe8';
+                ctx.beginPath();
+                ctx.ellipse(0, 3, cs * 0.85, cs * 0.28, 0, 0, Math.PI);
+                ctx.fill();
+
+                // Pearl
+                if (clam.openProgress > 0.08) {
+                    const pearlY = -cs * 0.18 * clam.openProgress;
+                    const pearlRadius = cs * 0.38;
+
+                    const auraGrad = ctx.createRadialGradient(0, pearlY, pearlRadius * 0.5, 0, pearlY, pearlRadius * 2.2);
+                    auraGrad.addColorStop(0, 'rgba(253, 224, 71, 0.85)');
+                    auraGrad.addColorStop(0.5, 'rgba(244, 114, 182, 0.4)');
+                    auraGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(0, pearlY, pearlRadius * 2.2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    const pearlGrad = ctx.createRadialGradient(-pearlRadius * 0.3, pearlY - pearlRadius * 0.3, pearlRadius * 0.1, 0, pearlY, pearlRadius);
+                    pearlGrad.addColorStop(0, '#ffffff');
+                    pearlGrad.addColorStop(0.4, '#fef08a');
+                    pearlGrad.addColorStop(0.8, '#f472b6');
+                    pearlGrad.addColorStop(1, '#c084fc');
+
+                    ctx.beginPath();
+                    ctx.arc(0, pearlY, pearlRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = pearlGrad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+
+                // Top Shell Lid
+                const openAngle = clam.openProgress * (Math.PI * 0.48);
+                ctx.save();
+                ctx.translate(0, 3);
+                ctx.rotate(-openAngle);
+
+                ctx.fillStyle = '#c2410c';
+                ctx.beginPath();
+                ctx.ellipse(0, -cs * 0.1, cs, cs * 0.45, 0, Math.PI, 0);
+                ctx.fill();
+                ctx.strokeStyle = '#451a03';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.restore();
+            }
+
+            drawFish(fish, timestamp) {
+                const ctx = this.ctx;
+                fish.tailPhase += 0.15;
+                fish.finPhase += 0.08;
+
+                // Kedipan mata sesekali (blink)
+                if (!fish.isBlinking) {
+                    fish.blinkTimer--;
+                    if (fish.blinkTimer <= 0) {
+                        fish.isBlinking = true;
+                        fish.blinkFrame = 0;
+                    }
+                } else {
+                    fish.blinkFrame++;
+                    if (fish.blinkFrame > 10) {
+                        fish.isBlinking = false;
+                        fish.blinkTimer = 150 + Math.floor(Math.random() * 300);
+                    }
+                }
+
+                if (fish.isShaking) {
+                    fish.shakeTimer++;
+                    if (fish.shakeTimer > 25) fish.isShaking = false;
+                } else {
+                    fish.x += fish.speed;
+                    if ((fish.speed > 0 && fish.x > this.width + 80) || (fish.speed < 0 && fish.x < -80)) {
+                        fish.speed *= -1;
+                    }
+                }
+
+                ctx.save();
+                ctx.translate(fish.x, fish.y);
+
+                if (fish.isShaking) ctx.translate(Math.sin(fish.shakeTimer * 1.5) * 8, 0);
+
+                const facingRight = fish.speed > 0;
+                if (!facingRight) ctx.scale(-1, 1);
+
+                const s = fish.size;
+                const sp = fish.species;
+
+                if (fish.isSelected) {
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, s * 1.4, s * 0.9, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // Tail Fin Wave
+                const tailAngle = Math.sin(fish.tailPhase) * 0.25;
+                ctx.save();
+                ctx.translate(-s * 0.8, 0);
+                ctx.rotate(tailAngle);
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(-s * 0.6, -s * 0.6, -s * 0.8, -s * 0.5);
+                ctx.quadraticCurveTo(-s * 0.5, 0, -s * 0.8, s * 0.5);
+                ctx.quadraticCurveTo(-s * 0.6, s * 0.6, 0, 0);
+                ctx.fillStyle = sp.finColor;
+                ctx.fill();
+                ctx.restore();
+
+                // Main Fish Body
+                const bodyGrad = ctx.createRadialGradient(s * 0.2, -s * 0.2, s * 0.1, 0, 0, s * 1.2);
+                bodyGrad.addColorStop(0, sp.bodyMain);
+                bodyGrad.addColorStop(0.7, sp.bodySub);
+                bodyGrad.addColorStop(1, '#0f172a');
+
+                ctx.beginPath();
+                ctx.ellipse(0, 0, s, s * 0.55, 0, 0, Math.PI * 2);
+                ctx.fillStyle = bodyGrad;
+                ctx.fill();
+
+                // Stripe
+                ctx.beginPath();
+                ctx.ellipse(-s * 0.1, 0, s * 0.18, s * 0.48, 0, 0, Math.PI * 2);
+                ctx.fillStyle = sp.stripe;
+                ctx.globalAlpha = 0.85;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+
+                // Eye (dengan efek kedipan sesekali)
+                const eyeX = s * 0.58;
+                const eyeY = -s * 0.15;
+                let eyeCloseScale = 1;
+                if (fish.isBlinking) {
+                    const t = fish.blinkFrame / 10;
+                    eyeCloseScale = Math.max(0.06, Math.abs(Math.cos(t * Math.PI)));
+                }
+                ctx.save();
+                ctx.translate(eyeX, eyeY);
+                ctx.scale(1, eyeCloseScale);
+                ctx.beginPath();
+                ctx.arc(0, 0, s * 0.15, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(1, 0, s * 0.09, 0, Math.PI * 2);
+                ctx.fillStyle = '#090d16';
+                ctx.fill();
+                ctx.restore();
+
+                if (fish.isBlinking && eyeCloseScale < 0.3) {
+                    ctx.strokeStyle = sp.bodySub;
+                    ctx.lineWidth = 1.5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(eyeX - s * 0.15, eyeY);
+                    ctx.lineTo(eyeX + s * 0.15, eyeY);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+
+                // Callout Speech Bubble Above Fish Head
+                if (fish.isSelected) {
+                    ctx.save();
+                    ctx.translate(fish.x, fish.y - fish.size * 0.85);
+
+                    const calloutW = 130;
+                    const calloutH = 46;
+                    const bubbleY = -calloutH - 12;
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(-8, bubbleY + calloutH);
+                    ctx.lineTo(8, bubbleY + calloutH);
+                    ctx.closePath();
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fill();
+
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+                    ctx.beginPath();
+                    ctx.roundRect(-calloutW / 2, bubbleY, calloutW, calloutH, 12);
+                    ctx.fill();
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    ctx.fillStyle = fish.sizeLevel === 3 ? '#f43f5e' : (fish.sizeLevel === 2 ? '#38bdf8' : '#34d399');
+                    ctx.font = '800 10px "Plus Jakarta Sans", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`IKAN ${fish.levelTag} (+${fish.points} POIN)`, 0, bubbleY + 14);
+
+                    ctx.fillStyle = '#fde047';
+                    ctx.font = '700 17px "Fredoka", sans-serif';
+                    ctx.fillText(fish.problem.equation, 0, bubbleY + 34);
+
+                    ctx.restore();
+                }
+            }
+
+            drawJellyfish(jelly, timestamp) {
+                const ctx = this.ctx;
+                jelly.bobPhase += 0.04;
+                jelly.tentaclePhase += 0.08;
+
+                if (jelly.isShaking) {
+                    jelly.shakeTimer++;
+                    if (jelly.shakeTimer > 25) jelly.isShaking = false;
+                } else {
+                    jelly.x += jelly.driftSpeed;
+                    if (jelly.x > this.width + 60) jelly.x = -60;
+                    if (jelly.x < -60) jelly.x = this.width + 60;
+                }
+
+                const bob = Math.sin(jelly.bobPhase) * 8;
+
+                ctx.save();
+                ctx.translate(jelly.x, jelly.y + bob);
+                if (jelly.isShaking) ctx.translate(Math.sin(jelly.shakeTimer * 1.5) * 8, 0);
+
+                const s = jelly.size;
+                const sp = jelly.species;
+
+                if (jelly.isSelected) {
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, s * 1.5, s * 1.3, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(192, 132, 252, 0.22)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#e879f9';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // Glow aura
+                const glowGrad = ctx.createRadialGradient(0, -s * 0.1, s * 0.2, 0, -s * 0.1, s * 1.6);
+                glowGrad.addColorStop(0, sp.glow);
+                glowGrad.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = glowGrad;
+                ctx.beginPath();
+                ctx.arc(0, -s * 0.1, s * 1.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Tentacles
+                const tentacleCount = 6;
+                for (let i = 0; i < tentacleCount; i++) {
+                    const tOffset = (i / (tentacleCount - 1) - 0.5) * s * 1.3;
+                    const wave = Math.sin(jelly.tentaclePhase + i * 1.1) * 8;
+                    ctx.strokeStyle = sp.tentacle;
+                    ctx.globalAlpha = 0.75;
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(tOffset, s * 0.25);
+                    ctx.quadraticCurveTo(tOffset + wave, s * 0.9, tOffset + wave * 0.6, s * 1.6);
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1.0;
+
+                // Bell (kepala)
+                const bellGrad = ctx.createRadialGradient(-s * 0.2, -s * 0.3, s * 0.1, 0, 0, s);
+                bellGrad.addColorStop(0, '#ffffff');
+                bellGrad.addColorStop(0.4, sp.bell);
+                bellGrad.addColorStop(1, sp.bellCore);
+                ctx.beginPath();
+                ctx.arc(0, 0, s * 0.75, Math.PI, 0);
+                ctx.quadraticCurveTo(s * 0.75, s * 0.55, 0, s * 0.35);
+                ctx.quadraticCurveTo(-s * 0.75, s * 0.55, -s * 0.75, 0);
+                ctx.fillStyle = bellGrad;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Bell pattern dots
+                ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                for (let d = -2; d <= 2; d++) {
+                    ctx.beginPath();
+                    ctx.arc(d * s * 0.22, -s * 0.15, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+
+                // Callout Speech Bubble Above Jellyfish
+                if (jelly.isSelected) {
+                    ctx.save();
+                    ctx.translate(jelly.x, jelly.y + bob - s * 0.95);
+
+                    const calloutW = 148;
+                    const calloutH = 46;
+                    const bubbleY = -calloutH - 12;
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(-8, bubbleY + calloutH);
+                    ctx.lineTo(8, bubbleY + calloutH);
+                    ctx.closePath();
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fill();
+
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+                    ctx.beginPath();
+                    ctx.roundRect(-calloutW / 2, bubbleY, calloutW, calloutH, 12);
+                    ctx.fill();
+                    ctx.strokeStyle = '#e879f9';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#e879f9';
+                    ctx.font = '800 9px "Plus Jakarta Sans", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`UBUR-UBUR (+${jelly.points}/-${jelly.points} POIN)`, 0, bubbleY + 14);
+
+                    ctx.fillStyle = '#fde047';
+                    ctx.font = '700 17px "Fredoka", sans-serif';
+                    ctx.fillText(jelly.problem.equation, 0, bubbleY + 34);
+
+                    ctx.restore();
+                }
+            }
+
+            drawFisherman(boatX, waveY, playerNum, themeColor) {
+                const ctx = this.ctx;
+
+                if (fishermanLoaded()) {
+                    const bh = getBoatH();
+                    ctx.save();
+                    ctx.translate(boatX, waveY + 10);
+
+                    // Riak air di bawah perahu
+                    ctx.beginPath();
+                    ctx.ellipse(0, 2, BOAT_W * 0.5, 6, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+                    ctx.fill();
+
+                    if (playerNum === 2) ctx.scale(-1, 1);
+                    ctx.drawImage(FISHERMAN_IMG, -BOAT_W / 2, -bh, BOAT_W, bh);
+                    ctx.restore();
+
+                    // Penanda warna pemain (biru / merah) di atas pemancing
+                    if (gameMode === 'vs') {
+                        const my = waveY + 10 - bh - 6;
+                        ctx.save();
+                        ctx.fillStyle = themeColor;
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.moveTo(boatX, my);
+                        ctx.lineTo(boatX - 8, my - 12);
+                        ctx.lineTo(boatX + 8, my - 12);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                    return;
+                }
+
+                const boatY = waveY + 2;
+
+                ctx.save();
+                ctx.translate(boatX, boatY);
+
+                if (playerNum === 2) ctx.scale(-1, 1);
+
+                // Water Ripple
+                ctx.beginPath();
+                ctx.ellipse(0, 10, 58, 6, 0, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.fill();
+
+                // Wooden Boat Hull
+                const woodGrad = ctx.createLinearGradient(-55, -8, 55, 20);
+                woodGrad.addColorStop(0, '#78350f');
+                woodGrad.addColorStop(0.5, '#b45309');
+                woodGrad.addColorStop(1, '#451a03');
+
+                ctx.fillStyle = woodGrad;
+                ctx.beginPath();
+                ctx.moveTo(-58, 0);
+                ctx.quadraticCurveTo(0, 24, 58, 0);
+                ctx.lineTo(48, -10);
+                ctx.lineTo(-48, -10);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = '#291003';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Fisherman Body
+                ctx.fillStyle = themeColor;
+                ctx.fillRect(-12, -34, 24, 22);
+
+                ctx.fillStyle = '#fecdd3';
+                ctx.beginPath();
+                ctx.arc(0, -40, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Hat
+                const hatGrad = ctx.createLinearGradient(-20, -47, 20, -42);
+                hatGrad.addColorStop(0, '#fde047');
+                hatGrad.addColorStop(1, '#ca8a04');
+                ctx.fillStyle = hatGrad;
+                ctx.beginPath();
+                ctx.ellipse(0, -46, 22, 7, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fishing Rod
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(8, -30);
+                ctx.quadraticCurveTo(35, -47, 58, -50);
+                ctx.stroke();
+
+                ctx.restore();
+
+                const rodTipX = boatX + (playerNum === 1 ? 58 : -58);
+                const rodTipY = boatY - 50;
+
+                return { rodTipX, rodTipY };
+            }
+
+            updateAndRender(timestamp) {
+                this.drawEnvironment(timestamp);
+                this.drawClam(timestamp);
+                this.fishes.forEach(fish => this.drawFish(fish, timestamp));
+                this.jellyfishes.forEach(jelly => this.drawJellyfish(jelly, timestamp));
+
+                // Render Boats
+                if (gameMode === 'vs') {
+                    const b1X = this.width * 0.25;
+                    const b2X = this.width * 0.75;
+                    this.drawFisherman(b1X, this.getWaveY(b1X, timestamp), 1, '#0284c7');
+                    this.drawFisherman(b2X, this.getWaveY(b2X, timestamp), 2, '#e11d48');
+                } else {
+                    const bX = this.width * 0.5;
+                    this.drawFisherman(bX, this.getWaveY(bX, timestamp), 1, '#0284c7');
+                }
+
+                // Fishing Line & Reeling Animation
+                const ctx = this.ctx;
+                if (this.fishingLine.active) {
+                    const p = this.fishingLine.player;
+                    const boatX = gameMode === 'vs' ? (p === 1 ? this.width * 0.25 : this.width * 0.75) : this.width * 0.5;
+                    const tip = getRodTip(boatX, this.getWaveY(boatX, timestamp), p);
+                    const rodTipX = tip.x;
+                    const rodTipY = tip.y;
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.moveTo(rodTipX, rodTipY);
+                    ctx.lineTo(this.fishingLine.hookX, this.fishingLine.hookY);
+                    ctx.stroke();
+
+                    ctx.fillStyle = p === 1 ? '#0284c7' : '#e11d48';
+                    ctx.beginPath();
+                    ctx.arc(this.fishingLine.hookX, this.fishingLine.hookY, 13, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '700 11px "Fredoka", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(this.fishingLine.baitText, this.fishingLine.hookX, this.fishingLine.hookY);
+
+                    if (this.fishingLine.state === 'casting') {
+                        this.fishingLine.hookX += (this.fishingLine.targetX - this.fishingLine.hookX) * 0.18;
+                        this.fishingLine.hookY += (this.fishingLine.targetY - this.fishingLine.hookY) * 0.18;
+                        if (Math.hypot(this.fishingLine.targetX - this.fishingLine.hookX, this.fishingLine.targetY - this.fishingLine.hookY) < 12) {
+                            this.fishingLine.state = 'nibbling';
+                            this.processBait();
+                        }
+                    } else if (this.fishingLine.state === 'reeling') {
+                        this.fishingLine.hookY -= 9;
+                        if (this.fishingLine.isClamTarget) {
+                            if (this.clam) {
+                                this.clam.x = this.fishingLine.hookX;
+                                this.clam.y = this.fishingLine.hookY + 20;
+                            }
+                        } else if (this.fishingLine.isJellyTarget) {
+                            if (this.selectedJellyfish) {
+                                this.selectedJellyfish.x = this.fishingLine.hookX;
+                                this.selectedJellyfish.y = this.fishingLine.hookY + 20;
+                            }
+                        } else if (this.selectedFish) {
+                            this.selectedFish.x = this.fishingLine.hookX;
+                            this.selectedFish.y = this.fishingLine.hookY + 20;
+                        }
+
+                        if (this.fishingLine.hookY < SEA_Y + 13) {
+                            playSuccessSound();
+
+                            const gainedPoints = this.fishingLine.isClamTarget
+                                ? 5
+                                : (this.fishingLine.isJellyTarget
+                                    ? (this.selectedJellyfish ? this.selectedJellyfish.points : 4)
+                                    : (this.selectedFish ? this.selectedFish.points : 1));
+                            if (p === 1) {
+                                this.p1Score += gainedPoints;
+                                document.getElementById('p1ScoreText').innerText = `${this.p1Score} Poin`;
+                            } else {
+                                this.p2Score += gainedPoints;
+                                document.getElementById('p2ScoreText').innerText = `${this.p2Score} Poin`;
+                            }
+
+                            if (this.fishingLine.isClamTarget) {
+                                this.clam.isOpen = false;
+                                this.clam.timer = 0;
+                            } else if (this.fishingLine.isJellyTarget) {
+                                const jIdx = this.jellyfishes.indexOf(this.selectedJellyfish);
+                                if (jIdx !== -1) {
+                                    this.jellyfishes[jIdx] = this.createJellyfish();
+                                }
+                            } else {
+                                const idx = this.fishes.indexOf(this.selectedFish);
+                                if (idx !== -1) {
+                                    this.fishes[idx] = this.createFish();
+                                }
+                            }
+
+                            this.deselectFish();
+                            this.fishingLine.active = false;
+                            if (gameMode === 'vs') switchTurn();
+                        }
+                    }
+                }
+            }
+        }
+
+        let oceanWorld = null;
+
+        function updateGameLayout() {
+            const p2Card = document.getElementById('p2ScoreCard');
+            const turnBadge = document.getElementById('turnBadge');
+            const modeBadge = document.getElementById('modeBadge');
+
+            if (gameMode === 'solo') {
+                p2Card.classList.add('hidden');
+                turnBadge.classList.add('hidden');
+                modeBadge.innerText = 'MODE SOLO';
+                modeBadge.className = 'text-[10px] bg-emerald-500/90 text-slate-950 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-emerald-300/40';
+            } else {
+                p2Card.classList.remove('hidden');
+                turnBadge.classList.remove('hidden');
+                modeBadge.innerText = 'DUEL 1 VS 1';
+                modeBadge.className = 'text-[10px] bg-rose-500/90 text-white px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest border border-rose-300/40';
+            }
+
+            if (!oceanWorld) oceanWorld = new OceanWorld('canvasOcean');
+            oceanWorld.resize();
+            updateTurnUI();
+        }
+
+        function switchTurn() {
+            currentTurn = currentTurn === 1 ? 2 : 1;
+            turnTimer = 60; // Reset turn duration to 60 seconds
+            updateTurnUI();
+            playTone(600, 'sine', 0.1);
+        }
+
+        function updateTurnUI() {
+            const turnText = document.getElementById('turnText');
+            const turnTimerBadge = document.getElementById('turnTimerBadge');
+            const p1Card = document.getElementById('p1ScoreCard');
+            const p2Card = document.getElementById('p2ScoreCard');
+
+            const activeName = currentTurn === 1 ? p1Name : p2Name;
+            if (turnText) turnText.innerText = `GILIRAN: ${activeName}`;
+            if (turnTimerBadge) turnTimerBadge.innerText = `${turnTimer}s`;
+
+            if (currentTurn === 1) {
+                p1Card.className = 'hud-card px-4 py-2 border-2 border-cyan-400 shadow-[0_0_22px_rgba(56,189,248,0.6)] scale-105 flex items-center space-x-3 transition-all duration-300';
+                p2Card.className = 'hud-card px-4 py-2 border-2 border-slate-700 opacity-60 flex items-center space-x-3 transition-all duration-300';
+            } else {
+                p2Card.className = 'hud-card px-4 py-2 border-2 border-rose-500 shadow-[0_0_22px_rgba(244,63,94,0.6)] scale-105 flex items-center space-x-3 transition-all duration-300';
+                p1Card.className = 'hud-card px-4 py-2 border-2 border-slate-700 opacity-60 flex items-center space-x-3 transition-all duration-300';
+            }
+        }
+
+        function closeBaitPanel() {
+            const baitPanel = document.getElementById('baitPanel');
+            if (baitPanel) {
+                baitPanel.classList.remove('translate-y-0', 'opacity-100');
+                baitPanel.classList.add('translate-y-28', 'opacity-0');
+            }
+        }
+
+        function openNameInputModal() {
+            const modal = document.getElementById('nameInputModal');
+            const p2Group = document.getElementById('p2InputGroup');
+            const p2Input = document.getElementById('inputP2Name');
+
+            if (gameMode === 'solo') {
+                p2Group.classList.add('hidden');
+                p2Input.removeAttribute('required');
+            } else {
+                p2Group.classList.remove('hidden');
+                p2Input.setAttribute('required', 'required');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function handlePlayerNameSubmit(e) {
+            e.preventDefault();
+            const input1 = document.getElementById('inputP1Name').value.trim();
+            const input2 = document.getElementById('inputP2Name').value.trim();
+
+            p1Name = input1 || "Pemain 1";
+            p2Name = gameMode === 'vs' ? (input2 || "Pemain 2") : "Pemain 2";
+
+            document.getElementById('p1NameLabel').innerText = p1Name;
+            document.getElementById('p2NameLabel').innerText = p2Name;
+
+            document.getElementById('nameInputModal').classList.add('hidden');
+            restartGame();
+        }
+
+        function openHotsModal() {
+            if (!oceanWorld || !oceanWorld.clam || !oceanWorld.clam.isOpen) return;
+
+            const modal = document.getElementById('hotsModal');
+            const activeName = currentTurn === 1 ? p1Name : p2Name;
+            
+            document.getElementById('hotsPlayerTag').innerText = `GILIRAN: ${activeName}`;
+            document.getElementById('hotsEquationText').innerText = oceanWorld.clam.problem.equation;
+
+            const container = document.getElementById('hotsOptionsContainer');
+            container.innerHTML = '';
+
+            oceanWorld.clam.problem.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn3d btn3d-sm py-3 px-3 text-lg'; btn.style.cssText = '--c:#ec4899;--d:#9d174d';
+                btn.innerHTML = `<i class="fa-solid fa-gem text-amber-300 text-xs"></i> <span>${opt}</span>`;
+                btn.onclick = () => {
+                    closeHotsModal();
+                    oceanWorld.throwBait(opt, true);
+                };
+                container.appendChild(btn);
+            });
+
+            modal.classList.remove('hidden');
+            playTone(700, 'sine', 0.15);
+        }
+
+        function closeHotsModal() {
+            document.getElementById('hotsModal').classList.add('hidden');
+        }
+
+        function setGameMode(mode) {
+            gameMode = mode;
+            document.getElementById('btnModeSolo').classList.toggle('sel', mode === 'solo');
+            document.getElementById('btnModeVS').classList.toggle('sel', mode === 'vs');
+        }
+
+        function selectTimeLimitMinutes(minutes) {
+            const minVal = parseInt(minutes) || 1;
+            selectedDuration = minVal * 60;
+
+            document.getElementById('customTimeDisplay').innerText = `${minVal} Menit`;
+            document.getElementById('currentTimeBadge').innerText = `Durasi: ${minVal} Mnt`;
+
+            const input = document.getElementById('customTimeInput');
+            if (input) input.value = '';
+
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.toggle('sel', parseInt(btn.dataset.min) === minVal);
+            });
+
+            playTone(600, 'sine', 0.1);
+        }
+
+        function handleCustomTimeInputMinutes(val) {
+            const parsed = parseInt(val);
+            if (!isNaN(parsed) && parsed > 0) {
+                selectedDuration = parsed * 60;
+                document.getElementById('customTimeDisplay').innerText = `${parsed} Menit`;
+                document.getElementById('currentTimeBadge').innerText = `Durasi: ${parsed} Mnt`;
+                document.querySelectorAll('.time-btn').forEach(btn => {
+                    btn.classList.toggle('sel', parseInt(btn.dataset.min) === parsed);
+                });
+            }
+        }
+
+        function selectGrade(gradeNum) {
+            currentGrade = gradeNum;
+            document.getElementById('currentGradeBadge').innerText = `Kelas ${gradeNum} SD`;
+            playTone(600, 'sine', 0.1);
+
+            document.querySelectorAll('.grade-btn').forEach((btn, idx) => {
+                btn.classList.toggle('sel', idx + 1 === gradeNum);
+            });
+        }
+
+        function startVsTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            gameTimer = selectedDuration;
+            turnTimer = 60;
+            
+            document.getElementById('globalTimerText').innerText = `${gameTimer}s`;
+            updateTurnUI();
+
+            timerInterval = setInterval(() => {
+                // Main match timer countdown
+                gameTimer--;
+                document.getElementById('globalTimerText').innerText = `${gameTimer}s`;
+
+                // Duel Mode Turn Timer countdown
+                if (gameMode === 'vs') {
+                    turnTimer--;
+                    const turnTimerBadge = document.getElementById('turnTimerBadge');
+                    if (turnTimerBadge) turnTimerBadge.innerText = `${turnTimer}s`;
+
+                    if (turnTimer <= 0) {
+                        playFailSound();
+                        switchTurn(); // Automatically switch turn when 60s runs out
+                    }
+                }
+
+                if (gameTimer <= 0) {
+                    clearInterval(timerInterval);
+                    showGameOverModal();
+                }
+            }, 1000);
+        }
+
+        function showGameOverModal() {
+            const modal = document.getElementById('gameOverModal');
+            const title = document.getElementById('winnerTitle');
+            const sub = document.getElementById('winnerSubtitle');
+
+            document.getElementById('resP1Score').innerText = `${oceanWorld.p1Score} Poin`;
+
+            if (gameMode === 'vs') {
+                document.getElementById('resP2Row').classList.remove('hidden');
+                document.getElementById('resP2Score').innerText = `${oceanWorld.p2Score} Poin`;
+
+                if (oceanWorld.p1Score > oceanWorld.p2Score) {
+                    title.innerText = `${p1Name.toUpperCase()} MENANG!`;
+                    title.className = 'text-2xl font-black text-cyan-300 mb-1 font-fredoka';
+                    sub.innerText = 'Selamat! Kamu pemancing matematika paling unggul!';
+                } else if (oceanWorld.p2Score > oceanWorld.p1Score) {
+                    title.innerText = `${p2Name.toUpperCase()} MENANG!`;
+                    title.className = 'text-2xl font-black text-rose-300 mb-1 font-fredoka';
+                    sub.innerText = 'Luar biasa! Strategi memancing yang luar biasa!';
+                } else {
+                    title.innerText = 'HASIL SERI / SEIMBANG!';
+                    title.className = 'text-2xl font-black text-amber-300 mb-1 font-fredoka';
+                    sub.innerText = 'Kedua pemancing sama-sama seru & hebat!';
+                }
+            } else {
+                document.getElementById('resP2Row').classList.add('hidden');
+                title.innerText = 'WAKTU HABIS!';
+                title.className = 'text-2xl font-black text-amber-300 mb-1 font-fredoka';
+                sub.innerText = `Kamu berhasil mengumpulkan ${oceanWorld.p1Score} poin!`;
+            }
+
+            modal.classList.remove('hidden');
+            playSuccessSound();
+        }
+
+        function hideGameOverModal() {
+            document.getElementById('gameOverModal').classList.add('hidden');
+        }
+
+        function enterFullscreen() {
+            const el = document.documentElement;
+            if (document.fullscreenElement || document.webkitFullscreenElement) return;
+            try {
+                const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+                if (req) {
+                    const r = req.call(el, { navigationUI: 'hide' });
+                    if (r && r.catch) r.catch(() => {});
+                }
+            } catch (e) {}
+        }
+
+        // Browser hanya mengizinkan fullscreen setelah interaksi pengguna,
+        // jadi sentuhan/klik pertama di mana pun langsung memicu fullscreen.
+        ['pointerdown', 'touchend', 'click', 'keydown'].forEach(evt => {
+            document.addEventListener(evt, function once() {
+                enterFullscreen();
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    ['pointerdown', 'touchend', 'click', 'keydown'].forEach(e => document.removeEventListener(e, once, true));
+                }
+            }, true);
+        });
+
+        function startFromCover() {
+            enterFullscreen();
+            try { initAudio(); } catch (e) {}
+            const cover = document.getElementById('coverPage');
+            cover.classList.add('cover-hide');
+            setTimeout(() => { cover.style.display = 'none'; }, 460);
+            openMenuModal();
+        }
+
+        function openMenuModal() {
+            document.getElementById('menuModal').classList.remove('hidden');
+        }
+
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.add('hidden');
+            if (!hasShownTutorial) {
+                showStartTutorial();
+            } else {
+                openNameInputModal();
+            }
+        }
+
+        function showStartTutorial() {
+            document.getElementById('tutorialModal').classList.remove('hidden');
+        }
+
+        function closeTutorialModal() {
+            document.getElementById('tutorialModal').classList.add('hidden');
+            hasShownTutorial = true;
+            openNameInputModal();
+        }
+
+        function restartGame() {
+            updateGameLayout();
+            if (oceanWorld) {
+                oceanWorld.p1Score = 0;
+                oceanWorld.p2Score = 0;
+                currentTurn = 1;
+                document.getElementById('p1ScoreText').innerText = '0 Poin';
+                document.getElementById('p2ScoreText').innerText = '0 Poin';
+                oceanWorld.resize();
+            }
+            hideGameOverModal();
+            startVsTimer();
+        }
+
+        function mainLoop(timestamp) {
+            if (oceanWorld) oceanWorld.updateAndRender(timestamp);
+            requestAnimationFrame(mainLoop);
+        }
+
+        window.addEventListener('resize', () => {
+            updateGameLayout();
+        });
+
+        window.onload = () => {
+            setGameMode('vs');
+            selectTimeLimitMinutes(1);
+            selectGrade(1);
+            updateGameLayout();
+            enterFullscreen();
+            requestAnimationFrame(mainLoop);
+        };
+    </script>
+</body>
+</html>
